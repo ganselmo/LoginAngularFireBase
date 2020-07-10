@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "angular-fs-b97bc": {
+      "hosting": {
+        "login": [
+          "angular-fs-b97bc"
+        ]
+      }
+    }
+  }
+}
