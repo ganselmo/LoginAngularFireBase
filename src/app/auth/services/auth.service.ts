@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 
 import { AngularFireAuth } from '@angular/fire/auth';
+import { promise } from 'protractor';
 
 
 @Injectable({
@@ -14,6 +15,11 @@ export class AuthService {
 
   constructor(public afAuth: AngularFireAuth
   ) { }
+
+  async sendEmailVerification()
+  {
+    return (await this.afAuth.currentUser).sendEmailVerification();
+  }
 
   async login(email: string, password: string) {
     try {
@@ -28,6 +34,7 @@ export class AuthService {
 
     try {
       const result = await this.afAuth.createUserWithEmailAndPassword(email, password);
+      this.sendEmailVerification();
       return result;
     } catch (error) {
       console.log(error);
