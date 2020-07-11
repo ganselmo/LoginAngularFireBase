@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl}  from '@angular/forms';
 
-import { FormGroup, FormControl}  from '@angular/forms'
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -8,18 +8,19 @@ import { FormGroup, FormControl}  from '@angular/forms'
 })
 export class RegisterComponent implements OnInit {
 
+  constructor() { }
+
   registerForm = new FormGroup({
     email: new FormControl(''),
     password:new FormControl('')
   })
-  constructor() { }
 
   ngOnInit(): void {
   }
 
   onRegister() :void
   {
-    console.log(this.registerForm.value)
+    console.log(this.registerForm.value);
   }
 
 }
