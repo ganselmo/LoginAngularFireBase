@@ -52,4 +52,13 @@ export class LoginComponent implements OnInit {
     
   }
 
+  async onGoogleLogin()
+  {
+    try {
+      this.authService.loginGoogle();
+    } catch (error) {
+      console.log(error)
+    } 
+  }
+
 }
