@@ -4,18 +4,37 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 import { auth } from 'firebase/app';
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { User } from 'src/app/shared/models/user.interface';
 
+import {AngularFirestore, AngularFirestoreDocument} from '@angular/fire/firestore'
+import { RoleValidator } from '../helpers/role-validator';
+import { promise } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService extends RoleValidator{
 
 
+  public user$:Observable<User>;
 
+  constructor(public afAuth: AngularFireAuth,
+    private afs:AngularFirestore
+  ) { 
+    super();
+    this.user$=this.afAuth.authState.pipe(switchMap( user =>
+      {
+        if(user)
+        {
 
-  constructor(public afAuth: AngularFireAuth
-  ) { }
+          return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
+        }
+        return of(null);
+      }))
+
+  }
 
 
   async resetPassword(email: string) {
@@ -29,21 +48,22 @@ export class AuthService {
     return (await this.afAuth.currentUser).sendEmailVerification();
   }
 
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<User>{
     try {
-      const result = await this.afAuth.signInWithEmailAndPassword(email, password);
-      return result;
+      const {user} = await this.afAuth.signInWithEmailAndPassword(email, password);
+      await this.updateUserData(user);
+      return user;
     } catch (error) {
       console.log(error)
     }
   }
 
-  async register(email: string, password: string) {
+  async register(email: string, password: string): Promise<User> {
 
     try {
-      const result = await this.afAuth.createUserWithEmailAndPassword(email, password);
-      this.sendEmailVerification();
-      return result;
+      const {user} = await this.afAuth.createUserWithEmailAndPassword(email, password);
+      await this.updateUserData(user);
+      return user;
     } catch (error) {
       console.log(error);
     }
@@ -58,13 +78,31 @@ export class AuthService {
     }
   }
 
-  async loginGoogle()
+  async loginGoogle(): Promise<User>
   {
     try {
-      return this.afAuth.signInWithPopup( new auth.GoogleAuthProvider())
+      const {user} = await this.afAuth.signInWithPopup( new auth.GoogleAuthProvider())
+      this.updateUserData(user);
+      return user;
     } catch (error) {
       console.log(error)
     }
+  }
+
+  private updateUserData(user:User)
+  {
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+    
+    const data:User = {
+      uid: user.uid,
+      email:user.email,
+      emailVerified:user.emailVerified,
+      displayName:user.displayName,
+      photoURL:user.photoURL,
+      role:'ADMIN'
+    };
+
+    return userRef.set(data,{merge:true})
   }
 
 }

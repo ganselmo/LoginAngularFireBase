@@ -26,7 +26,7 @@ export class ForgotPasswordComponent {
   
       window.alert('Email Sent, Check your inbox!')
   
-      this.router.navigate(['/home'])
+      this.router.navigate(['/login'])
     } catch (error) {
       console.log(error)
     }
