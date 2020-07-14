@@ -31,13 +31,13 @@ import { CanSuscriptorGuard } from './auth/guards/can-suscriptor.guard';
     AppRoutingModule,
     ReactiveFormsModule,
 
-    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireModule.initializeApp(environment.fireBaseConfig),
     AngularFireAuthModule,
     AngularFireStorageModule
 
   ],
   providers: [AuthService,CanEditGuard,CanAdminGuard,CanSuscriptorGuard,
-  {provide: BUCKET, useValue:'gs://login-ng-3dc2f.appspot.com/'}],
+  {provide: BUCKET, useValue:environment.fireStoreConfig}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
