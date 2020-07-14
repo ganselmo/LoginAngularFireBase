@@ -4,9 +4,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 # How To Run
 
-Git Clone
+`Git Clone`
 
-npm i
+`npm i`
 
 create environment Files with Firebase Conections and Firestore bucket value
 
