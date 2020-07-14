@@ -10,8 +10,12 @@ import { environment } from 'src/environments/environment';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireStorageModule,BUCKET} from "@angular/fire/storage";
+
 import { SendEmailComponent } from './auth/send-email/send-email.component';
 import { AuthService } from './auth/services/auth.service';
+
+
 import { CanEditGuard } from './auth/guards/can-edit.guard';
 import { CanAdminGuard } from './auth/guards/can-admin.guard';
 import { CanSuscriptorGuard } from './auth/guards/can-suscriptor.guard';
@@ -28,10 +32,12 @@ import { CanSuscriptorGuard } from './auth/guards/can-suscriptor.guard';
     ReactiveFormsModule,
 
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    AngularFireStorageModule
 
   ],
-  providers: [AuthService,CanEditGuard,CanAdminGuard,CanSuscriptorGuard],
+  providers: [AuthService,CanEditGuard,CanAdminGuard,CanSuscriptorGuard,
+  {provide: BUCKET, useValue:'gs://login-ng-3dc2f.appspot.com/'}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
